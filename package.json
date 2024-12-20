@@ -4,8 +4,24 @@
   "description": "A URL Shortener created by William Reed",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devStart": "nodemon server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willmreed14/url-shortener.git"
+  },
+  "bugs": {
+    "url": "https://github.com/willmreed14/url-shortener/issues"
+  },
+  "homepage": "https://github.com/willmreed14/url-shortener#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
 }
