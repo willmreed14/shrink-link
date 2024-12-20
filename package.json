@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/willmreed14/url-shortener#readme",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.9.2",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"

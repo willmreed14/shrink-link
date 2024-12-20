@@ -1,8 +1,8 @@
 const mongoose = require('mongoose') // require mongoose again
-const shortid = require('shortid') // require shortid
+const shortId = require('shortid') // require shortid
 
 // Generate a shortid using shortid package
-shortid.generate()
+shortId.generate()
 
 // Create a schema
 // Takes an object: all diff. columns for the DB
@@ -11,12 +11,10 @@ const shortUrlSchema = new mongoose.Schema({
         type: String, // type of column
         required: true // is column required?
     },
-    short: { 
+    short: {
         type: String,
         required: true,
-        // passing default value a FUNCTION
-        // the function then generates a short ID 
-        default: shortid.generate
+        default: shortId.generate
     },
     clicks: {
         type: Number,
