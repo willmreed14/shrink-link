@@ -8,11 +8,12 @@ const app = express()
 /* --- To start: npm run devStart --- */
 
 // Connect to the Mongo database
+/*
 mongoose.connect('mongodb://localhost/urlShortener')
     // display a message depending on if connection was successful
     .then(() => console.log('Connected to the database!'))
     .catch(err => console.error('Connection error:', err));
-
+*/
 // Setup views to use the ejs view engine (which is express)
 app.set('view engine', 'ejs')
 
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 
 // Create a new shortUrl in the database
 // async: make this function asynchronus
+/*
 app.post('/shortUrls', async (req, res) => {
     // Pass in the full url to create a short one
     // Grab full url from body -> fullUrl (in index.js)
@@ -37,6 +39,7 @@ app.post('/shortUrls', async (req, res) => {
     // proceed: Redirect user back to homepage after completion
     res.redirect('/')
 })
+    */
 /*
 Pass in the port number to listen to.
 
