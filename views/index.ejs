@@ -34,7 +34,8 @@
         class="btn btn-success" type="submit">Shrink</button>
     </form>
     
-    <table class="table table-striped table-responsive">
+    <div class = "table-responsive">
+    <table class="table table-striped table-responsive text-nowrap">
         <thead>
             <tr>
                 <th>Full URL</th>
@@ -43,15 +44,27 @@
             </tr>
         </thead>
         <tbody>
+            <!-- 
+            Loop thru each short URL and run the display function.
+            - The % brackets are delimiters for inserting JavaScript. 
+            - < % : Executes JS but not output to rendered HTML.
+            - <= % : Executes JS and outputs to rendered HTML (display data)
+            - <- % : Executes JS and outputs as raw HTML (render HTML tags)
+            -->
+            <% shortUrls.forEach(shortUrl => { %>
             <tr>
-                <td><a href="https://www.linkedin.com/in/will-m-reed/">
-                    https://www.linkedin.com/in/will-m-reed/</a></td>
-                    <td><a href="https://google.com">https://google.com</a></td>
-                    <td>10</td>
-                </tr>
-            </tbody>
+                <td><a href="<%= shortUrl.full %>" target="_blank" rel="noopener noreferrer">
+                    <%= shortUrl.full.length > 30 ? shortUrl.full.slice(0, 30) + '...' : shortUrl.full %>
+                </a></td>
+                <td><a href="/<%= shortUrl.short %>" target="_blank" rel="noopener noreferrer">
+                    <%= shortUrl.short %>
+                </a></td>
+                <td><%= shortUrl.clicks %></td>
+            </tr>
+            <% }) %>
+        </tbody>
         </table>
-
+    </div>
     </div> <!--Close Container-->
     </body>
     </html>

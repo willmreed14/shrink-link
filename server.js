@@ -25,8 +25,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
 // Routes
-app.get('/', (req, res) => {
-    res.render('index');
+app.get('/', async (req, res) => {
+    const shortUrls = await ShortUrl.find()
+    res.render('index', {shortUrls: shortUrls });
 });
 
 app.post('/shortUrls', async (req, res) => {
