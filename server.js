@@ -1,8 +1,11 @@
 const express = require('express') // require the express library
 const mongoose = require('mongoose') // require mongoose library
+const ShortUrl = require('./models/shortUrl') // Require the ShortUrl model we made in shortUrl.js
 
 // express() runs an express app stored in 'app'
 const app = express() 
+
+/* --- To start: npm run devStart --- */
 
 // Connect to the Mongo database
 mongoose.connect('mongodb://localhost/urlShortener')
@@ -13,16 +16,27 @@ mongoose.connect('mongodb://localhost/urlShortener')
 // Setup views to use the ejs view engine (which is express)
 app.set('view engine', 'ejs')
 
+// Tell app we are using url parameters.
+app.use(express.urlencoded({ extended: false }))
+
 // Define a route to index page
 // In other words, render everything in index.ejs out to frontend.
 app.get('/', (req, res) => {
     res.render('index') // Return the index.ejs page in /views
 })
 
-// Save a new shortUrl in the database
-app.post('/shortUrls', (req, res) => {
+// Create a new shortUrl in the database
+// async: make this function asynchronus
+app.post('/shortUrls', async (req, res) => {
+    // Pass in the full url to create a short one
+    // Grab full url from body -> fullUrl (in index.js)
 
-    })
+    // await: wait for this line to complete before proceeding.
+    await ShortUrl.create({ full: req.body.fullUrl })
+
+    // proceed: Redirect user back to homepage after completion
+    res.redirect('/')
+})
 /*
 Pass in the port number to listen to.
 
