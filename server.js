@@ -62,6 +62,10 @@ app.get('/:shortUrl', async (req, res) => {
     }
 });
 
+app.get(':/shortUrl', async (req, res) => {
+    const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl })
+})
+
 // Start Server
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server is running on port ${process.env.PORT || 5000}`);
