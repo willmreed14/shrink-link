@@ -18,8 +18,9 @@
     <!-- Ask for full url to shrink
         - class="my-4": add margin on top and bottom
         - form-inline: force the form to display in-line
+        - POST to the /shortUrls endpoint
          -->
-    <form action="" method="POST" class="my-4 d-flex"> 
+    <form action="/shortUrls" method="POST" class="my-4 d-flex"> 
         <!-- class=visually-hidden: only show the label to screenreaders --> 
         <label for="fullUrl" class="visually-hidden">Url</label>
         <input 
