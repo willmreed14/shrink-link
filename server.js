@@ -64,6 +64,12 @@ app.get('/:shortUrl', async (req, res) => {
 
 app.get(':/shortUrl', async (req, res) => {
     const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl })
+    if (shortUrl == null) return res.sendStatus(404) // handle bad url
+
+    shortUrl.click++ // count clicks of short url
+    shortUrl.save() // update short url w/ clicks value
+
+    res.redirect(shortUrl.full) // redirect user to full url 
 })
 
 // Start Server
