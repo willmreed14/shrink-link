@@ -5,6 +5,9 @@ require('dotenv').config();
 
 const app = express();
 
+// Verify that the .env file is being loaded properly.
+console.log('Mongo URI:', process.env.MONGO_URI);
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
