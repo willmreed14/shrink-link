@@ -10,3 +10,13 @@ const cognitoAuthConfig = {
 };
 
 export const userManager = new UserManager(cognitoAuthConfig);
+
+export async function signOutRedirect() {
+    try {
+        await userManager.signoutRedirect();  // Redirects to AWS Cognito logout
+        localStorage.clear();  // Clear stored tokens
+        window.location.href = "/";  // Redirect back to home page
+    } catch (error) {
+        console.error("❌ Error signing out:", error);
+    }
+}

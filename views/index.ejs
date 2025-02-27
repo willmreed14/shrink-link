@@ -21,10 +21,9 @@
             <button id="signIn" class="btn btn-primary">Sign In</button>
         <% } else { %>
             <p id="welcomeMessage">Welcome, <strong><%= user.email %></strong>!</p>
-            <button id="signOut" class="btn btn-danger">Sign Out</button>
         <% } %>
+        <button id="signOut" class="btn btn-danger" style="display: none;">Sign Out</button>
     </div>
-
 
     <!-- Warning message for non-authenticated users -->
     <div id="authWarning" class="alert alert-warning">You must be signed in to shorten a URL.</div>
@@ -75,84 +74,7 @@
 
 <!-- JavaScript -->
 <script type="module">
-    import { userManager } from "/main.js";
-
-    async function checkAuthStatus() {
-    const user = await userManager.getUser();
-    if (user) {
-        console.log("✅ User is signed in:", user);
-        localStorage.setItem("access_token", user.access_token);
-        localStorage.setItem("id_token", user.id_token);
-        localStorage.setItem("user_email", user.profile.email);
-
-        // Hide Sign-In Button & Remove Warning
-        const signInButton = document.getElementById("signIn");
-        if (signInButton) signInButton.style.display = "none";
-
-        const warning = document.getElementById("authWarning");
-        if (warning) warning.style.display = "none";
-
-        // Show Welcome Message
-        const welcomeMessage = document.getElementById("welcomeMessage");
-        if (welcomeMessage) {
-            welcomeMessage.textContent = `Welcome, ${user.profile.email}!`;
-            }
-        }
-    }
-
-    checkAuthStatus();
-
-    document.getElementById("shortenForm").addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const accessToken = localStorage.getItem("access_token");
-    if (!accessToken) {
-        alert("You must be signed in to shorten a URL.");
-        return;
-    }
-
-    const fullUrl = document.getElementById("fullUrl").value;
-    if (!fullUrl) return;
-
-    try {
-        const response = await fetch("/shortUrls", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${accessToken}`
-            },
-            body: JSON.stringify({ fullUrl })
-        });
-
-        if (response.ok) {
-            const newShortUrl = await response.json(); // Get the new shortened URL from response
-            console.log("✅ Successfully shortened URL:", newShortUrl);
-
-            // Add new shortened URL to the table dynamically
-            const tableBody = document.querySelector("tbody");
-            const newRow = document.createElement("tr");
-            newRow.innerHTML = `
-                <td><a href="${newShortUrl.full}" target="_blank">${newShortUrl.full.length > 30 ? newShortUrl.full.slice(0, 30) + '...' : newShortUrl.full}</a></td>
-                <td><a href="/${newShortUrl.short}" target="_blank">${newShortUrl.short}</a></td>
-                <td>0</td>
-            `;
-            tableBody.appendChild(newRow);
-
-            // Clear input field
-            document.getElementById("fullUrl").value = "";
-        } else {
-            const errorText = await response.text();
-            console.error("❌ Server Response:", errorText);
-            alert(`Failed to shorten URL: ${errorText}`);
-        }
-    } catch (error) {
-        console.error("❌ Fetch Error:", error);
-        alert("An error occurred. Please try again.");
-    }
-});
-</script>
-<script type="module">
-    import { userManager } from "/main.js";
+    import { userManager, signOutRedirect } from "/main.js";
 
     async function checkAuthStatus() {
         const user = await userManager.getUser();
@@ -162,20 +84,18 @@
             localStorage.setItem("id_token", user.id_token);
             localStorage.setItem("user_email", user.profile.email);
 
-            // Hide Sign-In Button & Remove Warning
+            // ✅ Fix: Ensure elements exist before modifying style properties
             const signInButton = document.getElementById("signIn");
+            const authWarning = document.getElementById("authWarning");
+            const signOutButton = document.getElementById("signOut");
+
             if (signInButton) signInButton.style.display = "none";
+            if (authWarning) authWarning.style.display = "none";
+            if (signOutButton) signOutButton.style.display = "block";
 
-            const warning = document.getElementById("authWarning");
-            if (warning) warning.style.display = "none";
+            document.getElementById("welcomeMessage").textContent = `Welcome, ${user.profile.email}!`;
 
-            // Show Welcome Message
-            const welcomeMessage = document.getElementById("welcomeMessage");
-            if (welcomeMessage) {
-                welcomeMessage.textContent = `Welcome, ${user.profile.email}!`;
-            }
-
-            // ✅ Fetch and display user's short URLs
+            // ✅ Fetch user's short URLs
             fetchUserShortUrls(user.access_token);
         }
     }
@@ -214,44 +134,33 @@
         }
     }
 
-    checkAuthStatus();
-</script>
-<script type="module">
-    import { userManager } from "/main.js";
+    // ✅ Debugging: Check if the Sign-In button exists
+    const signInButton = document.getElementById("signIn");
+    console.log("🔍 Checking Sign-In Button:", signInButton);
 
-    async function checkAuthStatus() {
-        const user = await userManager.getUser();
-        if (user) {
-            console.log("✅ User is signed in:", user);
-            localStorage.setItem("access_token", user.access_token);
-            localStorage.setItem("id_token", user.id_token);
-            localStorage.setItem("user_email", user.profile.email);
-
-            // Hide Sign-In Button, Show Sign-Out Button, Remove Warning
-            document.getElementById("signIn").style.display = "none";
-            document.getElementById("authWarning").style.display = "none";
-            document.getElementById("signOut").style.display = "block";
-            document.getElementById("welcomeMessage").textContent = `Welcome, ${user.profile.email}!`;
-
-            // Fetch user links
-            fetchUserShortUrls(user.access_token);
-        }
+    if (signInButton) {
+        signInButton.addEventListener("click", async () => {
+            console.log("🔍 Sign-In button clicked");
+            await userManager.signinRedirect();
+        });
+    } else {
+        console.error("❌ Sign-In Button NOT FOUND in the DOM");
     }
 
-    async function signOutUser() {
-        try {
-            await userManager.signoutRedirect(); // Redirect to Cognito's sign-out page
-            localStorage.clear(); // Clear stored tokens
-            window.location.href = "/"; // Redirect back to home page
-        } catch (error) {
-            console.error("❌ Error signing out:", error);
-        }
+    // ✅ Use AWS's provided sign-out logic
+    const signOutButton = document.getElementById("signOut");
+    if (signOutButton) {
+        signOutButton.addEventListener("click", async () => {
+            console.log("🔍 Sign-Out button clicked");
+            await signOutRedirect();
+        });
+    } else {
+        console.error("❌ Sign-Out Button NOT FOUND in the DOM");
     }
-
-    document.getElementById("signOut")?.addEventListener("click", signOutUser);
 
     checkAuthStatus();
 </script>
+
 
 
 </body>
