@@ -3,9 +3,34 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ShortUrl = require('./models/shortUrl');
+const jwt = require('jsonwebtoken');
+const jwksClient = require('jwks-rsa');
+
 require('dotenv').config();
 
 const app = express();
+
+const client = jwksClient({
+    jwksUri: `https://cognito-idp.us-east-1.amazonaws.com/YOUR_USER_POOL_ID/.well-known/jwks.json`
+});
+
+function getKey(header, callback) {
+    client.getSigningKey(header.kid, (err, key) => {
+        const signingKey = key.publicKey || key.rsaPublicKey;
+        callback(null, signingKey);
+    });
+}
+
+function authenticateToken(req, res, next) {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.sendStatus(401);
+
+    jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
+        if (err) return res.sendStatus(403);
+        req.user = decoded;
+        next();
+    });
+}
 
 // Verify that the .env file is being loaded properly.
 console.log('Mongo URI:', process.env.MONGO_URI);
