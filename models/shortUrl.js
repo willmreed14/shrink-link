@@ -1,3 +1,5 @@
+// shortUrl.js
+
 const mongoose = require('mongoose') // require mongoose again
 const shortId = require('shortid') // require shortid
 
@@ -20,7 +22,7 @@ const shortUrlSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
-    }
+    },
 })
 
 // Export the schema model to the database

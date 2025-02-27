@@ -21,6 +21,7 @@
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.10.1",
+    "oidc-client-ts": "^3.1.0",
     "shortid": "^2.2.8"
   },
   "devDependencies": {

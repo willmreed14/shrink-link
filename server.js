@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const mongoose = require('mongoose');
 const ShortUrl = require('./models/shortUrl');
@@ -23,6 +25,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
+
 
 // Routes
 app.get('/', async (req, res) => {
