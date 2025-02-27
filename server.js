@@ -87,6 +87,10 @@ app.post('/shortUrls', authenticateToken, async (req, res) => {
             return res.status(400).send('Full URL is required');
         }
 
+        if (!req.user) {
+            return res.status(401).json({ message: 'You must be signed in to shrink a URL.' });
+        }
+
         await ShortUrl.create({ full: fullUrl, userId: req.user.sub });
         res.redirect('/');
     } catch (error) {
