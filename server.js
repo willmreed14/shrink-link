@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ShortUrl = require('./models/shortUrl');
-require('dotenv').config();
+require('dotenv').config({ path: '/etc/app.env' });
 
 const app = express();
 
