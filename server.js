@@ -132,6 +132,25 @@ app.get('/', authenticateToken, async (req, res) => {
     }
 });
 
+app.get('/:shortUrl', async (req, res) => {
+    try {
+        const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
+
+        if (!shortUrl) {
+            return res.status(404).send('Short URL not found');
+        }
+
+        shortUrl.clicks++;
+        await shortUrl.save();
+
+        res.redirect(shortUrl.full);
+    } catch (error) {
+        console.error('Error redirecting short URL:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 app.get('/user/shortUrls', authenticateToken, async (req, res) => {
     try {
         if (!req.user) {
