@@ -4,7 +4,7 @@ import { UserManager } from "https://cdn.jsdelivr.net/npm/oidc-client-ts@2.0.1/+
 const cognitoAuthConfig = {
     authority: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_vJhXhdYyl",
     client_id: "3icpkdg6556jls0o34vv81frvf",
-    redirect_uri: "http://localhost:8000/callback",
+    redirect_uri: "https://shrinklink.xyz/callback",
     response_type: "code",
     scope: "phone openid email"
 };
