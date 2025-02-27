@@ -23,6 +23,10 @@ const shortUrlSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    userId: {
+        type: String,
+        required: true
+    }
 })
 
 // Export the schema model to the database
