@@ -25,6 +25,7 @@
         <button id="signOut" class="btn btn-danger" style="display: none;">Sign Out</button>
     </div>
 
+
     <!-- Warning message for non-authenticated users -->
     <div id="authWarning" class="alert alert-warning">You must be signed in to shorten a URL.</div>
 
@@ -39,7 +40,7 @@
             id="fullUrl"
             class="form-control flex-grow-1 me-2">
         <button id="shrinkButton" class="btn btn-success" type="submit">Shrink</button>
-    </form>
+    </form>    
 
     <!-- Table to display shortened URLs -->
     <div class="table-responsive">
@@ -76,30 +77,6 @@
 <script type="module">
     import { userManager, signOutRedirect } from "/main.js";
 
-    async function checkAuthStatus() {
-        const user = await userManager.getUser();
-        if (user) {
-            console.log("✅ User is signed in:", user);
-            localStorage.setItem("access_token", user.access_token);
-            localStorage.setItem("id_token", user.id_token);
-            localStorage.setItem("user_email", user.profile.email);
-
-            // ✅ Fix: Ensure elements exist before modifying style properties
-            const signInButton = document.getElementById("signIn");
-            const authWarning = document.getElementById("authWarning");
-            const signOutButton = document.getElementById("signOut");
-
-            if (signInButton) signInButton.style.display = "none";
-            if (authWarning) authWarning.style.display = "none";
-            if (signOutButton) signOutButton.style.display = "block";
-
-            document.getElementById("welcomeMessage").textContent = `Welcome, ${user.profile.email}!`;
-
-            // ✅ Fetch user's short URLs
-            fetchUserShortUrls(user.access_token);
-        }
-    }
-
     async function fetchUserShortUrls(token) {
         try {
             const response = await fetch("/user/shortUrls", {
@@ -129,15 +106,45 @@
                 `;
                 tableBody.appendChild(newRow);
             });
+
         } catch (error) {
             console.error("❌ Error fetching user URLs:", error);
         }
     }
 
-    // ✅ Debugging: Check if the Sign-In button exists
+    async function checkAuthStatus() {
+    const user = await userManager.getUser();
+    if (user) {
+        console.log("✅ User is signed in:", user);
+        localStorage.setItem("access_token", user.access_token);
+        localStorage.setItem("id_token", user.id_token);
+        localStorage.setItem("user_email", user.profile.email);
+
+        const signInButton = document.getElementById("signIn");
+        const authWarning = document.getElementById("authWarning");
+        const signOutButton = document.getElementById("signOut");
+        const welcomeMessage = document.getElementById("welcomeMessage");
+
+        if (signInButton) signInButton.style.display = "none";
+        if (authWarning) authWarning.style.display = "none";
+        if (signOutButton) signOutButton.style.display = "block";
+
+        // ✅ Fix: Ensure `welcomeMessage` exists before setting `textContent`
+        if (welcomeMessage) {
+            welcomeMessage.textContent = `Welcome, ${user.profile.email}!`;
+        } else {
+            console.warn("⚠️ Warning: welcomeMessage element NOT found in DOM");
+        }
+
+        // ✅ Fetch user links after sign-in
+        fetchUserShortUrls(user.access_token);
+    }
+}
+
+
+    // ✅ Handle Sign-In Button Click
     const signInButton = document.getElementById("signIn");
     console.log("🔍 Checking Sign-In Button:", signInButton);
-
     if (signInButton) {
         signInButton.addEventListener("click", async () => {
             console.log("🔍 Sign-In button clicked");
@@ -147,7 +154,7 @@
         console.error("❌ Sign-In Button NOT FOUND in the DOM");
     }
 
-    // ✅ Use AWS's provided sign-out logic
+    // ✅ Handle Sign-Out Button Click
     const signOutButton = document.getElementById("signOut");
     if (signOutButton) {
         signOutButton.addEventListener("click", async () => {
@@ -158,9 +165,55 @@
         console.error("❌ Sign-Out Button NOT FOUND in the DOM");
     }
 
+    // ✅ Handle URL Shortening Without Reloading the Page
+    document.getElementById("shortenForm").addEventListener("submit", async (event) => {
+        event.preventDefault(); // ✅ Prevent page reload
+
+        const fullUrl = document.getElementById("fullUrl").value;
+        if (!fullUrl) {
+            alert("Please enter a valid URL.");
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem("access_token");
+            const response = await fetch("/shortUrls", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ fullUrl })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to shorten URL.");
+            }
+
+            const newShortUrl = await response.json();
+            console.log("✅ New Short URL Created:", newShortUrl);
+
+            // ✅ Add new shortened URL to the table dynamically
+            const tableBody = document.querySelector("tbody");
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td><a href="${newShortUrl.full}" target="_blank">${newShortUrl.full.length > 30 ? newShortUrl.full.slice(0, 30) + '...' : newShortUrl.full}</a></td>
+                <td><a href="/${newShortUrl.short}" target="_blank">${newShortUrl.short}</a></td>
+                <td>${newShortUrl.clicks}</td>
+            `;
+            tableBody.appendChild(newRow);
+
+            // ✅ Clear input field after submission
+            document.getElementById("fullUrl").value = "";
+
+        } catch (error) {
+            console.error("❌ Error shortening URL:", error);
+            alert("Failed to shorten URL. Please try again.");
+        }
+    });
+
     checkAuthStatus();
 </script>
-
 
 
 </body>
