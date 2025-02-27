@@ -26,7 +26,7 @@ function authenticateToken(req, res, next) {
     if (!token) return res.sendStatus(401);
 
     jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
-        if (err) return res.sendStatus(403);
+        if (err) return res.sendStatus(401);
         req.user = decoded;
         next();
     });
@@ -54,18 +54,40 @@ app.use(express.static('public'));
 
 // Routes
 app.get('/', async (req, res) => {
-    const shortUrls = await ShortUrl.find()
-    res.render('index', {shortUrls: shortUrls });
+    let shortUrls = [];
+
+    // Check if user is authenticated
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (token) {
+        try {
+            const decoded = await new Promise((resolve, reject) => {
+                jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
+                    if (err) reject(err);
+                    resolve(decoded);
+                });
+            });
+
+            // Fetch links for authenticated user
+            shortUrls = await ShortUrl.find({ userId: decoded.sub });
+        } catch (error) {
+            console.error('Error verifying token:', error);
+        }
+    }
+
+    res.render('index', { shortUrls });
 });
 
-app.post('/shortUrls', async (req, res) => {
+
+// Adds userID to every link a user creates.
+app.post('/shortUrls', authenticateToken, async (req, res) => {
     try {
         const fullUrl = req.body.fullUrl;
         if (!fullUrl) {
             return res.status(400).send('Full URL is required');
         }
 
-        await ShortUrl.create({ full: fullUrl });
+        await ShortUrl.create({ full: fullUrl, userId: req.user.sub });
         res.redirect('/');
     } catch (error) {
         console.error('Error creating short URL:', error);
@@ -73,32 +95,21 @@ app.post('/shortUrls', async (req, res) => {
     }
 });
 
-app.get('/:shortUrl', async (req, res) => {
+app.get('/:shortUrl', authenticateToken, async (req, res) => {
     try {
-        const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl });
+        const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl, userId: req.user.sub });
         if (!shortUrl) {
-            return res.status(404).send('Short URL not found');
+            return res.status(404).send('Short URL not found or unauthorized');
         }
 
         shortUrl.clicks++;
         await shortUrl.save();
-
         res.redirect(shortUrl.full);
     } catch (error) {
         console.error('Error redirecting short URL:', error);
         res.status(500).send('Internal Server Error');
     }
 });
-
-app.get(':/shortUrl', async (req, res) => {
-    const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl })
-    if (shortUrl == null) return res.sendStatus(404) // handle bad url
-
-    shortUrl.click++ // count clicks of short url
-    shortUrl.save() // update short url w/ clicks value
-
-    res.redirect(shortUrl.full) // redirect user to full url 
-})
 
 // Start Server
 app.listen(process.env.PORT || 8000, () => {
