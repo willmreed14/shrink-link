@@ -10,8 +10,21 @@ require('dotenv').config();
 
 const app = express();
 
+// 🔹 ADD THIS CSP MIDDLEWARE HERE
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy",
+        "default-src 'self' https://*.amazoncognito.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;" +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.amazoncognito.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;" +
+        "connect-src 'self' https://*.amazoncognito.com https://cognito-idp.us-east-1.amazonaws.com;" +
+        "frame-src 'self' https://*.amazoncognito.com;" +
+        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;"
+    );
+    next();
+});
+
+
 const client = jwksClient({
-    jwksUri: `https://cognito-idp.us-east-1.amazonaws.com/YOUR_USER_POOL_ID/.well-known/jwks.json`
+    jwksUri: `https://cognito-idp.us-east-1.amazonaws.com/us-east-1_vJhXhdYyl/.well-known/jwks.json`
 });
 
 function getKey(header, callback) {
@@ -49,12 +62,17 @@ mongoose.connect(process.env.MONGO_URI, {
 // Middleware
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json()); // ✅ ADD THIS LINE TO ENABLE JSON PARSING
 app.use(express.static('public'));
 
-
 // Routes
+app.get('/callback', (req, res) => {
+    res.render('callback');
+});
+
 app.get('/', async (req, res) => {
     let shortUrls = [];
+    let user = null; // Default to null (not logged in)
 
     // Check if user is authenticated
     const token = req.headers.authorization?.split(' ')[1];
@@ -68,52 +86,66 @@ app.get('/', async (req, res) => {
                 });
             });
 
-            // Fetch links for authenticated user
+            user = decoded; // Store user details
             shortUrls = await ShortUrl.find({ userId: decoded.sub });
         } catch (error) {
             console.error('Error verifying token:', error);
         }
     }
 
-    res.render('index', { shortUrls });
+    res.render('index', { shortUrls, user });
 });
 
 
 // Adds userID to every link a user creates.
 app.post('/shortUrls', authenticateToken, async (req, res) => {
     try {
-        const fullUrl = req.body.fullUrl;
+        const { fullUrl } = req.body;
         if (!fullUrl) {
-            return res.status(400).send('Full URL is required');
+            return res.status(400).json({ error: "Full URL is required" }); // ✅ Return JSON error instead of HTML
         }
 
-        if (!req.user) {
-            return res.status(401).json({ message: 'You must be signed in to shrink a URL.' });
-        }
-
-        await ShortUrl.create({ full: fullUrl, userId: req.user.sub });
-        res.redirect('/');
+        const newShortUrl = await ShortUrl.create({ full: fullUrl, userId: req.user.sub });
+        res.json(newShortUrl); // ✅ Ensure response is JSON
     } catch (error) {
-        console.error('Error creating short URL:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('❌ Error creating short URL:', error);
+        res.status(500).json({ error: "Internal Server Error" }); // ✅ Return JSON for server errors
     }
 });
 
-app.get('/:shortUrl', authenticateToken, async (req, res) => {
+
+app.get('/', authenticateToken, async (req, res) => {
     try {
-        const shortUrl = await ShortUrl.findOne({ short: req.params.shortUrl, userId: req.user.sub });
-        if (!shortUrl) {
-            return res.status(404).send('Short URL not found or unauthorized');
+        let shortUrls = [];
+        let user = null;
+
+        // If user is authenticated, fetch their links
+        if (req.user) {
+            user = req.user;
+            shortUrls = await ShortUrl.find({ userId: user.sub }); // ✅ Fetch only this user's links
         }
 
-        shortUrl.clicks++;
-        await shortUrl.save();
-        res.redirect(shortUrl.full);
+        res.render('index', { shortUrls, user });
     } catch (error) {
-        console.error('Error redirecting short URL:', error);
-        res.status(500).send('Internal Server Error');
+        console.error("❌ Error fetching user links:", error);
+        res.status(500).send("Internal Server Error");
     }
 });
+
+app.get('/user/shortUrls', authenticateToken, async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
+
+        const shortUrls = await ShortUrl.find({ userId: req.user.sub }); // ✅ Fetch only the user's links
+        res.json(shortUrls);
+    } catch (error) {
+        console.error("❌ Error fetching user links:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 // Start Server
 app.listen(process.env.PORT || 8000, () => {
