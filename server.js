@@ -6,7 +6,7 @@ const ShortUrl = require('./models/shortUrl');
 const jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 
-require('dotenv').config();
+require('dotenv').config({ path: './etc/app.env' });
 
 const app = express();
 
