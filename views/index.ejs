@@ -8,26 +8,49 @@
           rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
           crossorigin="anonymous">
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 0px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            flex: 1;
+            text-align: center;
+            margin: 0;
+        }
+
+        .auth-controls {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
 <div class="container">
 
-    <h1>URL Shortener</h1>
-
-    <!-- Authentication Controls -->
-    <div id="authControls">
-        <% if (!user) { %>
-            <button id="signIn" class="btn btn-primary">Sign In</button>
-        <% } else { %>
-            <p id="welcomeMessage">Welcome, <strong><%= user.email %></strong>!</p>
-        <% } %>
-        <button id="signOut" class="btn btn-danger" style="display: none;">Sign Out</button>
+    <!-- Container for header and auth controls -->
+    <div class="header-container">
+        <h1>Shrink Link</h1>
+        <div class="auth-controls">
+            <% if (!user) { %>
+                <button id="signIn" class="btn btn-primary">Sign In</button>
+            <% } else { %>
+                <p id="welcomeMessage">Welcome, <strong><%= user.email %></strong>!</p>
+                <button id="signOut" class="btn btn-danger">Sign Out</button>
+            <% } %>
+        </div>
     </div>
 
+    
 
     <!-- Warning message for non-authenticated users -->
-    <div id="authWarning" class="alert alert-warning">You must be signed in to shorten a URL.</div>
+    <div style = "margin-top: 20px" id="authWarning" class="alert alert-warning">You must be signed in to shorten a URL.</div>
 
     <!-- URL Shortening Form -->
     <form id="shortenForm" class="my-4 d-flex">
