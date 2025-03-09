@@ -4,9 +4,6 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/willmreed14/shrink-link">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
 
 <h3 align="center">ShrinkLink - A Simple & Secure URL Shortener</h3>
 
@@ -21,25 +18,11 @@
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
+    <li><a href="#about-the-project">About The Project</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -59,7 +42,7 @@
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- HOW TO USE -->
+<!-- GETTING STARTED -->
 ## Getting Started
 
 This project is deployed and accessible at [ShrinkLink.xyz](https://shrinklink.xyz)
@@ -67,47 +50,28 @@ This project is deployed and accessible at [ShrinkLink.xyz](https://shrinklink.x
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+- Create a secure account using your preferred email and password.
+- Enter the long URL you wish to shrink.
+- The shortened URL will appear, which you can click on or copy to share!
+- Past shortened URLs will also be displayed, with their click counts.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [ ] **User Authentication** - Secure sign-in/sign-out with AWS Cognito
+  - [X] Sign-In
+  - [ ] Sign-Out: Button does not display, needs to be fixed
+- [X] **Personalized URL Storage** - Users can manage their own shortened links
+- [X] **Click Tracking** – View the number of times a link has been clicked
+- [X] **Deployed on AWS EC2** – Live and accessible from anywhere
 
+<!--
 See the [open issues](https://github.com/willmreed14/shrink-link/issues) for a full list of proposed features (and known issues).
+-->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Top contributors:
-
-<a href="https://github.com/willmreed14/shrink-link/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=willmreed14/shrink-link" alt="contrib.rocks image" />
-</a>
 
 <!-- CONTACT -->
 ## Contact
