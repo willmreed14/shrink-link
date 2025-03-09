@@ -43,18 +43,12 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `willmreed14`, `shrink-link`, `twitter_handle`, `will-m-reed`, `email_client`, `willmreed14@gmail.com`, `ShrinkLink`, `ShrinkLink is a lightweight, full-stack URL shortener that allows users to quickly generate shortened links while tracking click counts.`, `project_license`
+![ShrinkLink Screenshot](images/shrinklink-preview.png)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 ### Built With
 
@@ -65,46 +59,10 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-<!-- GETTING STARTED -->
+<!-- HOW TO USE -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/willmreed14/shrink-link.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin willmreed14/shrink-link
-   git remote -v # confirm the changes
-   ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
+This project is deployed and accessible at [ShrinkLink.xyz](https://shrinklink.xyz)
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -114,8 +72,6 @@ Use this space to show useful examples of how a project can be used. Additional 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -153,38 +109,14 @@ Don't forget to give the project a star! Thanks again!
   <img src="https://contrib.rocks/image?repo=willmreed14/shrink-link" alt="contrib.rocks image" />
 </a>
 
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the project_license. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - willmreed14@gmail.com@email_client.com
+William Reed - willmreed14@gmail.com
 
 Project Link: [https://github.com/willmreed14/shrink-link](https://github.com/willmreed14/shrink-link)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -200,9 +132,9 @@ Project Link: [https://github.com/willmreed14/shrink-link](https://github.com/wi
 [license-url]: https://github.com/willmreed14/shrink-link/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/will-m-reed
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: https://imgur.com/g14zWYb
 
-<!-- BADGES -->
+<!-- TECH STACK BADGES -->
 [MongoDB]: https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white
 [MongoDB-url]: https://www.mongodb.com/
 [Express]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
